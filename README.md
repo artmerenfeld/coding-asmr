@@ -1,8 +1,22 @@
 # Coding ASMR
 
-Turn your AI coding sessions into something you can hear. Typing clicks loop while Claude writes code, scanner sounds play while it reads files, and a satisfying jingle plays when it's done thinking. Every tool call, every file read, every command — has a sound.
+<p align="center">
+  <img src="asmrlogo.png" alt="Coding ASMR" width="200">
+</p>
 
-All sounds are handmade recordings. No synth bloops. Keyboard clicks, mechanical spacebar thunks, scanner hums, completion chimes.
+Handmade sound effects for Claude Code. Every tool call gets a pleasant, calming oldschool clicking and typing sound — as if Claude is sitting next to you, typing away.
+
+Paste this into your AI coding assistant to install:
+
+```bash
+git clone https://github.com/artmerenfeld/coding-asmr.git && cd coding-asmr && npm run install-hooks
+```
+
+Requires [FFmpeg](https://ffmpeg.org/) (`winget install FFmpeg` / `brew install ffmpeg` / `apt install ffmpeg`). Restart your Claude Code session after.
+
+---
+
+Typing clicks loop while Claude writes code, scanner sounds play while it reads files, and a completion chime plays when it's done. All sounds are handmade recordings — keyboard clicks, mechanical spacebar thunks, scanner hums, completion chimes.
 
 ## What It Sounds Like
 
