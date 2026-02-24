@@ -1,7 +1,7 @@
 {
   "name": "coding-asmr",
   "version": "1.0.0",
-  "description": "Retro sound effects for AI coding tools - Claude Code, Cursor, VS Code, and beyond",
+  "description": "Handmade sound effects for Claude Code - typing clicks, scanner hums, and completion chimes",
   "main": "core/index.js",
   "scripts": {
     "on": "node cli.js on",
@@ -15,7 +15,7 @@
     "test-sound": "node scripts/test-sound.js",
     "test-all": "node scripts/test-all.js"
   },
-  "keywords": ["claude-code", "cursor", "vscode", "sound", "audio", "retro", "plugin"],
+  "keywords": ["claude-code", "sound", "audio", "hooks", "plugin"],
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
