@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execSync } = require('child_process');
 
 // Check ffplay is available
@@ -17,7 +18,7 @@ try {
 }
 
 const projectRoot = path.resolve(__dirname, '..');
-const settingsPath = path.join(projectRoot, '.claude', 'settings.json');
+const settingsPath = path.join(os.homedir(), '.claude', 'settings.json');
 
 const handlerPath = path.join(projectRoot, 'handler.js').replace(/\\/g, '/');
 const ambientPath = path.join(projectRoot, 'scripts', 'ambient.js').replace(/\\/g, '/');
@@ -94,7 +95,7 @@ for (const [event, entries] of Object.entries(soundHooks)) {
 fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
 fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
 
-console.log('Coding ASMR hooks installed into .claude/settings.json');
+console.log(`Coding ASMR hooks installed into ${settingsPath}`);
 console.log(`Handler:  ${handlerPath}`);
 console.log(`Ambient:  ${ambientPath}`);
 console.log('\nHook flow:');

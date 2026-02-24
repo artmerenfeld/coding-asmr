@@ -16,7 +16,7 @@ const { execSync } = require('child_process');
 
 const ROOT_DIR = __dirname;
 const CONFIG_PATH = path.join(ROOT_DIR, 'config.json');
-const SETTINGS_PATH = path.join(ROOT_DIR, '.claude', 'settings.json');
+const SETTINGS_PATH = path.join(os.homedir(), '.claude', 'settings.json');
 const AMBIENT_PATH = path.join(ROOT_DIR, 'scripts', 'ambient.js');
 
 const TEMP_FILES = [
@@ -112,7 +112,7 @@ switch (cmd) {
         if (Object.keys(settings.hooks).length === 0) delete settings.hooks;
       }
       fs.writeFileSync(SETTINGS_PATH, JSON.stringify(settings, null, 2));
-      console.log('Coding ASMR hooks removed from .claude/settings.json');
+      console.log(`Coding ASMR hooks removed from ${SETTINGS_PATH}`);
     } catch {
       console.log('No hooks found to remove.');
     }
