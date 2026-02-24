@@ -1,0 +1,13 @@
+{
+  "name": "coding-asmr",
+  "owner": {
+    "name": "Artem Merenfeld"
+  },
+  "plugins": [
+    {
+      "name": "coding-asmr",
+      "source": ".",
+      "description": "Handmade sound effects for AI coding sessions - typing clicks, scanner hums, and completion chimes"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "volume": 35,
+  "sounds": {
+    "session-start": {
+      "enabled": true
+    },
+    "click": {
+      "enabled": true
+    },
+    "check": {
+      "enabled": true
+    },
+    "error": {
+      "enabled": true
+    },
+    "notification": {
+      "enabled": true
+    },
+    "typing-loop": {
+      "enabled": true
+    },
+    "readloop": {
+      "enabled": true
+    },
+    "compact": {
+      "enabled": true
+    }
+  }
+}

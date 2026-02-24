@@ -1,0 +1,57 @@
+{
+  "name": "coding-asmr-vscode",
+  "displayName": "Coding ASMR",
+  "description": "Retro sound effects for coding - keyboard clicks, terminal beeps, and chimes. Works with any AI assistant in VS Code, Cursor, or Windsurf.",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "coding-asmr.toggle",
+        "title": "Coding ASMR: Toggle Sounds On/Off"
+      },
+      {
+        "command": "coding-asmr.testAll",
+        "title": "Coding ASMR: Play All Sounds"
+      }
+    ],
+    "configuration": {
+      "title": "Coding ASMR",
+      "properties": {
+        "coding-asmr.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable all sound effects"
+        },
+        "coding-asmr.volume": {
+          "type": "number",
+          "default": 35,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Sound volume (0-100)"
+        },
+        "coding-asmr.typingSounds": {
+          "type": "boolean",
+          "default": true,
+          "description": "Play keyboard click sounds when text changes in editor"
+        },
+        "coding-asmr.terminalSounds": {
+          "type": "boolean",
+          "default": true,
+          "description": "Play terminal sounds on task start/end"
+        },
+        "coding-asmr.fileSounds": {
+          "type": "boolean",
+          "default": true,
+          "description": "Play sounds when files are opened/saved"
+        }
+      }
+    }
+  },
+  "keywords": ["sound", "audio", "retro", "cursor", "claude", "coding"]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "coding-asmr",
+  "version": "1.0.0",
+  "description": "Retro sound effects for AI coding tools - Claude Code, Cursor, VS Code, and beyond",
+  "main": "core/index.js",
+  "scripts": {
+    "on": "node cli.js on",
+    "off": "node cli.js off",
+    "volume": "node cli.js volume",
+    "status": "node cli.js status",
+    "install-hooks": "node cli.js install",
+    "uninstall": "node cli.js uninstall",
+    "stop": "node cli.js stop",
+    "setup": "node setup.js",
+    "test-sound": "node scripts/test-sound.js",
+    "test-all": "node scripts/test-all.js"
+  },
+  "keywords": ["claude-code", "cursor", "vscode", "sound", "audio", "retro", "plugin"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
