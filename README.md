@@ -114,7 +114,6 @@ Loops start at a random offset so they don't sound identical each time.
 | Spacebar | `spacebar1.wav`, `spacebar2.wav` | Session starts |
 | Thinking | `thinking1.wav` — `thinking17.wav` | You submit a prompt (40% volume) |
 | Question | `question1.wav` — `question13.wav` | Claude asks you something (40% volume) |
-| Error | `error.wav` | Tool failure |
 | Notification | `notification.wav` | Needs attention |
 | Compact | `compact.wav` | Context compaction |
 
@@ -133,8 +132,9 @@ One-shots play over ongoing loops — they don't interrupt them. They have a 0.5
 | `PostToolUse` | — | click |
 | `PostToolUse` (Write/Edit/Bash) | Start typing | — |
 | `PostToolUse` (TodoWrite) | — | check |
-| `PostToolUseFailure` | Start typing | error |
+| `PostToolUseFailure` | Start typing | click |
 | `Stop` | Stop | check |
+| `SessionEnd` | Stop | — |
 | `Notification` | — | notification |
 | `PreCompact` | Stop | click + compact |
 
@@ -150,7 +150,7 @@ Edit `config.json`:
     "session-start": { "enabled": true },
     "click":         { "enabled": true },
     "check":         { "enabled": true },
-    "error":         { "enabled": true },
+    "error":         { "enabled": false },
     "notification":  { "enabled": true },
     "typing-loop":   { "enabled": true },
     "readloop":      { "enabled": true },

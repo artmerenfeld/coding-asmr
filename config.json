@@ -12,7 +12,7 @@
       "enabled": true
     },
     "error": {
-      "enabled": true
+      "enabled": false
     },
     "notification": {
       "enabled": true

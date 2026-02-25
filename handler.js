@@ -18,7 +18,8 @@ const RANDOM_SOUNDS = {
   check: { prefix: 'check', count: 3 },
   'session-start': { prefix: 'spacebar', count: 2 },
   thinking: { prefix: 'thinking', count: 17, volumeScale: 0.4, chance: 1.0 },
-  question: { prefix: 'question', count: 13, volumeScale: 0.4, chance: 1.0 },
+  'thinking-random': { prefix: 'thinking', count: 17, volumeScale: 0.4, chance: 0.07 },
+  question: { prefix: 'question', count: 13, volumeScale: 0.4, chance: 0.7 },
 };
 
 // Cooldown: prevent spammy rapid-fire sounds
@@ -46,7 +47,9 @@ try {
 }
 const volume = config.volume != null ? config.volume : 70;
 if (!config.enabled) process.exit(0);
-if (config.sounds && config.sounds[soundName] && config.sounds[soundName].enabled === false) process.exit(0);
+// Check per-sound config (thinking-random uses the "thinking" toggle)
+const configKey = soundName === 'thinking-random' ? 'thinking' : soundName;
+if (config.sounds && config.sounds[configKey] && config.sounds[configKey].enabled === false) process.exit(0);
 
 // Random variant sounds (handmade)
 if (RANDOM_SOUNDS[soundName]) {

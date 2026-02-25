@@ -56,16 +56,19 @@ const soundHooks = {
     { matcher: 'Write|Edit|Bash', hooks: [makeAmbientHook('start', 'typing-loop')] },
   ],
   PostToolUse: [
-    { hooks: [makeHook('click')] },
+    { hooks: [makeHook('click'), makeHook('thinking-random')] },
     { matcher: 'Write|Edit|Bash', hooks: [makeAmbientHook('start', 'typing-loop')] },
     { matcher: 'TodoWrite', hooks: [makeHook('check')] },
   ],
   PostToolUseFailure: [
-    { hooks: [makeHook('error'), makeAmbientHook('start', 'typing-loop')] },
+    { hooks: [makeHook('click'), makeAmbientHook('start', 'typing-loop')] },
   ],
   Stop: [
     { hooks: [makeAmbientHook('stop')] },
     { hooks: [makeHook('check')] },
+  ],
+  SessionEnd: [
+    { hooks: [makeAmbientHook('stop')] },
   ],
   Notification: [
     { hooks: [makeHook('notification')] },
