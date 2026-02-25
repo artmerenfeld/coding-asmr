@@ -1,0 +1,18 @@
+{
+  "name": "Default ASMR",
+  "description": "Gentle typing, clicks, and thinking murmurs",
+  "volume": 35,
+  "sounds": {
+    "click":           { "prefix": "click",    "count": 6 },
+    "check":           { "prefix": "check",    "count": 3 },
+    "session-start":   { "prefix": "spacebar", "count": 2 },
+    "thinking":        { "prefix": "thinking", "count": 17, "volumeScale": 0.3, "chance": 1.0 },
+    "thinking-random": { "prefix": "thinking", "count": 17, "volumeScale": 0.3, "chance": 0.07 },
+    "question":        { "prefix": "question", "count": 13, "volumeScale": 0.3, "chance": 0.7 }
+  },
+  "loops": {
+    "typing-loop": { "file": "sounds/handmade/typing.wav", "maxOffset": 27 },
+    "readloop":    { "files": ["sounds/handmade/readloop1.wav", "sounds/handmade/readloop2.wav"], "maxOffset": 7 }
+  },
+  "extras": []
+}

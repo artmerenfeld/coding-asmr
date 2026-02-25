@@ -4,6 +4,7 @@
 //   node cli.js on              → enable all sounds
 //   node cli.js off             → disable all sounds + stop loops
 //   node cli.js volume <0-100>  → set volume
+//   node cli.js preset [name]   → list/switch presets
 //   node cli.js install         → install hooks into .claude/settings.json
 //   node cli.js uninstall       → remove hooks + stop loops + clean temp files
 //   node cli.js stop            → emergency: kill all loops
@@ -127,11 +128,66 @@ switch (cmd) {
     break;
   }
 
+  case 'preset': {
+    const presetsDir = path.join(ROOT_DIR, 'presets');
+    if (!arg || arg === 'list') {
+      // List available presets
+      let files;
+      try { files = fs.readdirSync(presetsDir).filter(f => f.endsWith('.json')); }
+      catch { files = []; }
+      const config = loadConfig();
+      const active = config.preset || 'default';
+      console.log('Available presets:');
+      for (const f of files) {
+        const name = f.replace('.json', '');
+        const marker = name === active ? ' (active)' : '';
+        try {
+          const data = JSON.parse(fs.readFileSync(path.join(presetsDir, f), 'utf-8'));
+          console.log(`  ${name}${marker} — ${data.description || ''}`);
+        } catch {
+          console.log(`  ${name}${marker}`);
+        }
+      }
+      break;
+    }
+    if (arg === 'off' || arg === 'none' || arg === 'reset') {
+      // Clear preset, revert to defaults
+      const config = loadConfig();
+      delete config.preset;
+      saveConfig(config);
+      console.log('Preset cleared. Using default sounds.');
+      break;
+    }
+    // Switch to a preset
+    const presetPath = path.join(presetsDir, arg + '.json');
+    if (!fs.existsSync(presetPath)) {
+      console.error(`Preset "${arg}" not found. Run "node cli.js preset list" to see available presets.`);
+      process.exit(1);
+    }
+    const presetData = JSON.parse(fs.readFileSync(presetPath, 'utf-8'));
+    const config = loadConfig();
+    config.preset = arg;
+    // Apply preset volume if defined
+    if (presetData.volume != null) {
+      config.volume = presetData.volume;
+    }
+    // Sync error toggle: enable if preset defines error sounds, disable otherwise
+    if (!config.sounds) config.sounds = {};
+    if (!config.sounds.error) config.sounds.error = {};
+    config.sounds.error.enabled = !!(presetData.sounds && presetData.sounds.error);
+    saveConfig(config);
+    console.log(`Preset: ${presetData.name || arg}`);
+    console.log(`  ${presetData.description || ''}`);
+    console.log(`  Volume: ${config.volume}/100`);
+    break;
+  }
+
   case 'status': {
     const config = loadConfig();
     console.log(`Coding ASMR status:`);
     console.log(`  Enabled: ${config.enabled}`);
     console.log(`  Volume:  ${config.volume}/100`);
+    console.log(`  Preset:  ${config.preset || 'default'}`);
     console.log(`  Sounds:`);
     for (const [name, opts] of Object.entries(config.sounds || {})) {
       console.log(`    ${name.padEnd(16)} ${opts.enabled === false ? 'OFF' : 'ON'}`);
@@ -152,12 +208,15 @@ switch (cmd) {
     console.log(`Coding ASMR - Sound control
 
 Usage:
-  node cli.js on              Enable sounds
-  node cli.js off             Disable sounds + stop loops
-  node cli.js volume <0-100>  Set volume (current: ${loadConfig().volume}/100)
-  node cli.js volume          Show current volume
-  node cli.js install         Install hooks
-  node cli.js uninstall       Remove hooks + clean up
-  node cli.js stop            Emergency: kill all running loops
-  node cli.js status          Show current configuration`);
+  node cli.js on                Enable sounds
+  node cli.js off               Disable sounds + stop loops
+  node cli.js volume <0-100>    Set volume (current: ${loadConfig().volume}/100)
+  node cli.js volume            Show current volume
+  node cli.js preset            List presets
+  node cli.js preset <name>     Switch to a preset
+  node cli.js preset off        Clear preset (use defaults)
+  node cli.js install           Install hooks
+  node cli.js uninstall         Remove hooks + clean up
+  node cli.js stop              Emergency: kill all running loops
+  node cli.js status            Show current configuration`);
 }

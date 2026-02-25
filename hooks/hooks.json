@@ -120,6 +120,12 @@
           },
           {
             "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/handler.js\" error",
+            "async": true,
+            "timeout": 10
+          },
+          {
+            "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/ambient.js\" start typing-loop",
             "async": true,
             "timeout": 10

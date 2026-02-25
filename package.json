@@ -11,6 +11,7 @@
     "install-hooks": "node cli.js install",
     "uninstall": "node cli.js uninstall",
     "stop": "node cli.js stop",
+    "preset": "node cli.js preset",
     "setup": "node setup.js",
     "test-sound": "node scripts/test-sound.js",
     "test-all": "node scripts/test-all.js"

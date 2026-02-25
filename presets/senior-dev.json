@@ -1,0 +1,46 @@
+{
+  "name": "Senior Developer",
+  "description": "Frustrated senior dev energy - swearing, coffee, crisps",
+  "volume": 45,
+  "sounds": {
+    "thinking": {
+      "files": [
+        "ahfuck.wav", "ahshit.wav", "amidumb.wav", "comeon.wav", "ffs.wav",
+        "frustrationagh.wav", "fuckinghell.wav", "goddamnit.wav", "goddamnit2.wav",
+        "hmm.wav", "hmm2.wav", "jesus.wav", "nonsense.wav", "really.wav",
+        "shit.wav", "sure.wav", "sure2.wav", "tsh.wav", "ugh.wav", "ugh2.wav",
+        "ughm.wav", "what.wav", "amazing.wav", "whatdoesitdo.wav", "whowrotethis.wav"
+      ],
+      "volumeScale": 0.4,
+      "chance": 1.0
+    },
+    "thinking-random": {
+      "files": [
+        "ahfuck.wav", "ahshit.wav", "amidumb.wav", "comeon.wav", "ffs.wav",
+        "frustrationagh.wav", "fuckinghell.wav", "goddamnit.wav", "goddamnit2.wav",
+        "hmm.wav", "hmm2.wav", "jesus.wav", "nonsense.wav", "really.wav",
+        "shit.wav", "sure.wav", "sure2.wav", "tsh.wav", "ugh.wav", "ugh2.wav",
+        "ughm.wav", "what.wav", "amazing.wav", "whowrotethis.wav"
+      ],
+      "volumeScale": 0.4,
+      "chance": 0.1
+    },
+    "question": {
+      "files": ["question1.wav", "question2.wav", "question3.wav", "question4.wav", "whatdoesitdo.wav"],
+      "volumeScale": 0.35,
+      "chance": 0.8
+    },
+    "error": {
+      "files": ["fuckinghell.wav", "goddamnit.wav", "goddamnit2.wav", "ahfuck.wav", "ahshit.wav"],
+      "volumeScale": 0.5,
+      "chance": 1.0
+    }
+  },
+  "loops": {},
+  "extras": [
+    { "files": ["canopen.wav"], "volumeScale": 0.35, "chance": 0.08 },
+    { "files": ["coffee1.wav", "coffee2.wav", "slurp1.wav"], "volumeScale": 0.3, "chance": 0.12 },
+    { "files": ["crisp1.wav", "crisp2.wav"], "volumeScale": 0.2, "chance": 0.13 },
+    { "files": ["smokestart1.wav", "smoking1.wav", "smoking2.wav"], "volumeScale": 0.25, "chance": 0.1 }
+  ]
+}

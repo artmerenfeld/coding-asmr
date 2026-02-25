@@ -1,6 +1,7 @@
 {
   "enabled": true,
-  "volume": 35,
+  "volume": 45,
+  "preset": "senior-dev",
   "sounds": {
     "session-start": {
       "enabled": true
@@ -12,7 +13,7 @@
       "enabled": true
     },
     "error": {
-      "enabled": false
+      "enabled": true
     },
     "notification": {
       "enabled": true

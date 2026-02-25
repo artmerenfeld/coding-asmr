@@ -61,7 +61,7 @@ const soundHooks = {
     { matcher: 'TodoWrite', hooks: [makeHook('check')] },
   ],
   PostToolUseFailure: [
-    { hooks: [makeHook('click'), makeAmbientHook('start', 'typing-loop')] },
+    { hooks: [makeHook('click'), makeHook('error'), makeAmbientHook('start', 'typing-loop')] },
   ],
   Stop: [
     { hooks: [makeAmbientHook('stop')] },

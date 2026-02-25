@@ -12,8 +12,8 @@ if (!soundName) process.exit(0);
 const rootDir = __dirname;
 const { play } = require(path.join(rootDir, 'core', 'player'));
 
-// Sounds with multiple random variants in sounds/handmade/
-const RANDOM_SOUNDS = {
+// Default sounds (used when no preset is active or as fallback)
+const DEFAULT_SOUNDS = {
   click: { prefix: 'click', count: 6 },
   check: { prefix: 'check', count: 3 },
   'session-start': { prefix: 'spacebar', count: 2 },
@@ -38,6 +38,80 @@ function writeCooldown(name, file) {
   try { fs.writeFileSync(COOLDOWN_FILE, JSON.stringify(cd)); } catch {}
 }
 
+// Load active preset (returns null if none set)
+function loadPreset(config) {
+  if (!config.preset) return null;
+  const presetPath = path.join(rootDir, 'presets', config.preset + '.json');
+  try { return JSON.parse(fs.readFileSync(presetPath, 'utf-8')); }
+  catch { return null; }
+}
+
+// Resolve sound definition: preset overrides > defaults
+function resolveSoundDef(soundName, preset) {
+  const base = DEFAULT_SOUNDS[soundName];
+  if (preset && preset.sounds && preset.sounds[soundName]) {
+    return { ...base, ...preset.sounds[soundName] };
+  }
+  return base;
+}
+
+// Resolve the directory to find sound files in
+function resolveSoundDir(def, preset, config) {
+  if (preset && config.preset) {
+    const presetDir = path.join(rootDir, 'sounds', config.preset);
+    // For files array, check if first file exists in preset dir
+    if (def.files) {
+      const testFile = path.join(presetDir, def.files[0]);
+      try { fs.accessSync(testFile); return presetDir; } catch {}
+    }
+    // For prefix+count, check prefix1.wav
+    if (def.prefix) {
+      const testFile = path.join(presetDir, `${def.prefix}1.wav`);
+      try { fs.accessSync(testFile); return presetDir; } catch {}
+    }
+  }
+  return path.join(rootDir, 'sounds', 'handmade');
+}
+
+// Pick a random file from a sound definition (supports files array or prefix+count)
+function pickFile(def, lastFile) {
+  if (def.files) {
+    // Files array: pick random, avoid repeating last
+    const pool = def.files.length > 1 && lastFile
+      ? def.files.filter(f => f !== lastFile)
+      : def.files;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  // Prefix+count: existing behavior
+  const { prefix, count } = def;
+  if (count > 1 && lastFile) {
+    const lastN = parseInt(lastFile.replace(prefix, '').replace('.wav', ''));
+    const all = Array.from({ length: count }, (_, i) => i + 1);
+    const pool = all.filter(i => i !== lastN);
+    return `${prefix}${pool[Math.floor(Math.random() * pool.length)]}.wav`;
+  }
+  return `${prefix}${Math.floor(Math.random() * count) + 1}.wav`;
+}
+
+// Play a random variant from a sound definition
+function playVariant(def, soundDir, vol) {
+  const cooldowns = readCooldowns();
+  const last = cooldowns[soundName];
+  const elapsed = last ? Date.now() - last.time : Infinity;
+
+  if (elapsed < HARD_COOLDOWN) return false;
+
+  const lastFile = (elapsed < VARIANT_COOLDOWN && last.file) ? last.file : null;
+  const file = pickFile(def, lastFile);
+
+  const wavPath = path.join(soundDir, file);
+  try { fs.accessSync(wavPath); } catch { return false; }
+
+  writeCooldown(soundName, file);
+  play(wavPath, vol);
+  return true;
+}
+
 // Check config
 let config;
 try {
@@ -47,44 +121,39 @@ try {
 }
 const volume = config.volume != null ? config.volume : 70;
 if (!config.enabled) process.exit(0);
+
 // Check per-sound config (thinking-random uses the "thinking" toggle)
 const configKey = soundName === 'thinking-random' ? 'thinking' : soundName;
 if (config.sounds && config.sounds[configKey] && config.sounds[configKey].enabled === false) process.exit(0);
 
-// Random variant sounds (handmade)
-if (RANDOM_SOUNDS[soundName]) {
-  const def = RANDOM_SOUNDS[soundName];
-  const { prefix, count } = def;
+// Load preset
+const preset = loadPreset(config);
 
+// Random variant sounds (handmade or preset)
+const def = resolveSoundDef(soundName, preset);
+if (def) {
   // Random chance — skip if roll fails
-  if (def.chance != null && def.chance < 1 && Math.random() >= def.chance) process.exit(0);
-
-  const cooldowns = readCooldowns();
-  const last = cooldowns[soundName];
-  const elapsed = last ? Date.now() - last.time : Infinity;
-
-  // Hard cooldown: skip entirely
-  if (elapsed < HARD_COOLDOWN) process.exit(0);
-
-  // Pick a random variant, respecting variant cooldown
-  let n;
-  if (elapsed < VARIANT_COOLDOWN && last.file && count > 1) {
-    // Exclude the last-played file, pick from remaining
-    const all = Array.from({ length: count }, (_, i) => i + 1);
-    const lastN = parseInt(last.file.replace(prefix, '').replace('.wav', ''));
-    const pool = all.filter(i => i !== lastN);
-    n = pool[Math.floor(Math.random() * pool.length)];
-  } else {
-    n = Math.floor(Math.random() * count) + 1;
+  if (def.chance != null && def.chance < 1 && Math.random() >= def.chance) {
+    // For thinking-random, still try extras even if base roll fails
+    if (soundName === 'thinking-random' && preset && preset.extras && preset.extras.length > 0) {
+      const extrasDir = path.join(rootDir, 'sounds', config.preset || 'handmade');
+      for (const extra of preset.extras) {
+        if (Math.random() < (extra.chance || 0)) {
+          const vol = extra.volumeScale ? Math.round(volume * extra.volumeScale) : volume;
+          const file = pickFile(extra, null);
+          const wavPath = path.join(extrasDir, file);
+          try { fs.accessSync(wavPath); } catch { continue; }
+          play(wavPath, vol);
+          process.exit(0);
+        }
+      }
+    }
+    process.exit(0);
   }
 
-  const file = `${prefix}${n}.wav`;
-  const wavPath = path.join(rootDir, 'sounds', 'handmade', file);
-  try { fs.accessSync(wavPath); } catch { process.exit(0); }
-
-  writeCooldown(soundName, file);
+  const soundDir = resolveSoundDir(def, preset, config);
   const vol = def.volumeScale ? Math.round(volume * def.volumeScale) : volume;
-  play(wavPath, vol);
+  playVariant(def, soundDir, vol);
   process.exit(0);
 }
 

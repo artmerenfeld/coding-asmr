@@ -14,8 +14,8 @@ const LOCK_FILE = PID_FILE + '.lock';
 const ROOT_DIR = path.resolve(__dirname, '..');
 const MIN_PLAY_DURATION = 300; // 0.3s - don't replace a loop younger than this
 
-// Map sound names to file paths and random offset ranges
-const LOOP_SOUNDS = {
+// Default loop sounds (used when no preset is active or as fallback)
+const DEFAULT_LOOPS = {
   'typing-loop': {
     file: 'sounds/handmade/typing.wav',
     maxOffset: 27, // 30s file, leave 3s buffer
@@ -25,6 +25,23 @@ const LOOP_SOUNDS = {
     maxOffset: 7, // 10s files, leave 3s buffer
   },
 };
+
+// Load active preset (returns null if none set)
+function loadPreset(config) {
+  if (!config.preset) return null;
+  const presetPath = path.join(ROOT_DIR, 'presets', config.preset + '.json');
+  try { return JSON.parse(fs.readFileSync(presetPath, 'utf-8')); }
+  catch { return null; }
+}
+
+// Resolve loop definition: preset overrides > defaults
+function resolveLoop(soundName, preset) {
+  const base = DEFAULT_LOOPS[soundName];
+  if (preset && preset.loops && preset.loops[soundName]) {
+    return { ...base, ...preset.loops[soundName] };
+  }
+  return base;
+}
 
 // --- Lock to prevent race conditions when parallel hooks fire ---
 function acquireLock() {
@@ -82,20 +99,21 @@ function killPid(data) {
   }
 }
 
-// Kill any orphaned ffplay processes playing our sound files
+// Kill ALL ffplay/afplay processes playing our sound files
 function killOrphans() {
-  if (os.platform() !== 'win32') return;
+  const platform = os.platform();
   try {
-    // Find ffplay processes whose command line contains our sounds directory
-    const soundsDir = path.join(ROOT_DIR, 'sounds').replace(/\\/g, '\\\\');
-    const cmd = `wmic process where "name='ffplay.exe' and commandline like '%${soundsDir}%'" get processid /format:list 2>NUL`;
-    const output = execSync(cmd, { encoding: 'utf-8', timeout: 3000 });
-    const pids = output.match(/ProcessId=(\d+)/g);
-    if (pids) {
-      for (const match of pids) {
-        const pid = parseInt(match.split('=')[1]);
-        try { process.kill(pid); } catch {}
-      }
+    if (platform === 'win32') {
+      // taskkill is reliable on all Windows versions (wmic is deprecated on Win11)
+      execSync('taskkill /IM ffplay.exe /F 2>NUL', { encoding: 'utf-8', timeout: 3000 });
+    } else if (platform === 'darwin') {
+      // Kill afplay processes playing our sounds
+      const soundsDir = path.join(ROOT_DIR, 'sounds');
+      execSync(`pkill -f "afplay.*${soundsDir}" 2>/dev/null`, { timeout: 3000 });
+    } else {
+      // Linux: kill paplay/aplay/ffplay playing our sounds
+      const soundsDir = path.join(ROOT_DIR, 'sounds');
+      execSync(`pkill -f "paplay.*${soundsDir}" 2>/dev/null; pkill -f "aplay.*${soundsDir}" 2>/dev/null; pkill -f "ffplay.*${soundsDir}" 2>/dev/null`, { timeout: 3000 });
     }
   } catch {}
 }
@@ -137,7 +155,8 @@ function startLoop(soundName) {
     if (!config.enabled) return;
     if (config.sounds && config.sounds[soundName] && config.sounds[soundName].enabled === false) return;
 
-    const loopDef = LOOP_SOUNDS[soundName];
+    const preset = loadPreset(config);
+    const loopDef = resolveLoop(soundName, preset);
     if (!loopDef) return;
 
     // Resolve the WAV file path
