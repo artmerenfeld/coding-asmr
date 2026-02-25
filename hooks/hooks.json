@@ -17,12 +17,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/ambient.js\" stop",
-            "async": true,
-            "timeout": 10
-          },
-          {
-            "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/handler.js\" click",
             "async": true,
             "timeout": 10
@@ -60,10 +54,26 @@
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/handler.js\" click",
             "async": true,
             "timeout": 10
-          },
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|Bash",
+        "hooks": [
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/ambient.js\" start typing-loop",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/handler.js\" check",
             "async": true,
             "timeout": 10
           }
@@ -96,7 +106,11 @@
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/ambient.js\" stop",
             "async": true,
             "timeout": 10
-          },
+          }
+        ]
+      },
+      {
+        "hooks": [
           {
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/handler.js\" check",

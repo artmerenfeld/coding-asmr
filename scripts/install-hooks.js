@@ -47,18 +47,21 @@ const soundHooks = {
     { hooks: [makeHook('session-start')] },
   ],
   PreToolUse: [
-    { hooks: [makeAmbientHook('stop'), makeHook('click')] },
+    { hooks: [makeHook('click')] },
     { matcher: 'Read|Grep|Glob', hooks: [makeAmbientHook('start', 'readloop')] },
     { matcher: 'Write|Edit|Bash', hooks: [makeAmbientHook('start', 'typing-loop')] },
   ],
   PostToolUse: [
-    { hooks: [makeHook('click'), makeAmbientHook('start', 'typing-loop')] },
+    { hooks: [makeHook('click')] },
+    { matcher: 'Write|Edit|Bash', hooks: [makeAmbientHook('start', 'typing-loop')] },
+    { matcher: 'TodoWrite', hooks: [makeHook('check')] },
   ],
   PostToolUseFailure: [
     { hooks: [makeHook('error'), makeAmbientHook('start', 'typing-loop')] },
   ],
   Stop: [
-    { hooks: [makeAmbientHook('stop'), makeHook('check')] },
+    { hooks: [makeAmbientHook('stop')] },
+    { hooks: [makeHook('check')] },
   ],
   Notification: [
     { hooks: [makeHook('notification')] },

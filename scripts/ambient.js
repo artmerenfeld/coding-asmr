@@ -12,6 +12,7 @@ const os = require('os');
 const PID_FILE = path.join(os.tmpdir(), 'coding-asmr-ambient.pid');
 const LOCK_FILE = PID_FILE + '.lock';
 const ROOT_DIR = path.resolve(__dirname, '..');
+const MIN_PLAY_DURATION = 300; // 0.3s - don't replace a loop younger than this
 
 // Map sound names to file paths and random offset ranges
 const LOOP_SOUNDS = {
@@ -115,8 +116,15 @@ function stopLoop() {
 function startLoop(soundName) {
   acquireLock();
   try {
-    // Kill any existing loop first
-    killPid(readPid());
+    // Don't replace a loop that just started (gives it time to be heard)
+    const current = readPid();
+    if (current && current.pid && isAlive(current.pid)) {
+      const age = Date.now() - (current.time || 0);
+      if (age < MIN_PLAY_DURATION) return;
+    }
+
+    // Kill any existing loop
+    killPid(current);
     try { fs.unlinkSync(PID_FILE); } catch {}
 
     // Check config
@@ -149,6 +157,10 @@ function startLoop(soundName) {
     if (loopDef.maxOffset > 0) {
       const offset = Math.floor(Math.random() * loopDef.maxOffset);
       args.push('-ss', String(offset));
+    }
+    // Smooth fade-in for readloop
+    if (soundName === 'readloop') {
+      args.push('-af', 'afade=t=in:d=0.1');
     }
     args.push(wavPath);
 
