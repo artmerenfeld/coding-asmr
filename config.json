@@ -25,6 +25,12 @@
     },
     "compact": {
       "enabled": true
+    },
+    "thinking": {
+      "enabled": true
+    },
+    "question": {
+      "enabled": true
     }
   }
 }

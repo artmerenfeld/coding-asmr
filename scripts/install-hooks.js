@@ -46,8 +46,12 @@ const soundHooks = {
   SessionStart: [
     { hooks: [makeHook('session-start')] },
   ],
+  UserPromptSubmit: [
+    { hooks: [makeHook('thinking')] },
+  ],
   PreToolUse: [
     { hooks: [makeHook('click')] },
+    { matcher: 'AskUserQuestion', hooks: [makeHook('question')] },
     { matcher: 'Read|Grep|Glob', hooks: [makeAmbientHook('start', 'readloop')] },
     { matcher: 'Write|Edit|Bash', hooks: [makeAmbientHook('start', 'typing-loop')] },
   ],

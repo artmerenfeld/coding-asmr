@@ -17,6 +17,8 @@ const RANDOM_SOUNDS = {
   click: { prefix: 'click', count: 6 },
   check: { prefix: 'check', count: 3 },
   'session-start': { prefix: 'spacebar', count: 2 },
+  thinking: { prefix: 'thinking', count: 17, volumeScale: 0.4, chance: 1.0 },
+  question: { prefix: 'question', count: 13, volumeScale: 0.4, chance: 1.0 },
 };
 
 // Cooldown: prevent spammy rapid-fire sounds
@@ -48,7 +50,12 @@ if (config.sounds && config.sounds[soundName] && config.sounds[soundName].enable
 
 // Random variant sounds (handmade)
 if (RANDOM_SOUNDS[soundName]) {
-  const { prefix, count } = RANDOM_SOUNDS[soundName];
+  const def = RANDOM_SOUNDS[soundName];
+  const { prefix, count } = def;
+
+  // Random chance — skip if roll fails
+  if (def.chance != null && def.chance < 1 && Math.random() >= def.chance) process.exit(0);
+
   const cooldowns = readCooldowns();
   const last = cooldowns[soundName];
   const elapsed = last ? Date.now() - last.time : Infinity;
@@ -73,7 +80,8 @@ if (RANDOM_SOUNDS[soundName]) {
   try { fs.accessSync(wavPath); } catch { process.exit(0); }
 
   writeCooldown(soundName, file);
-  play(wavPath, volume);
+  const vol = def.volumeScale ? Math.round(volume * def.volumeScale) : volume;
+  play(wavPath, vol);
   process.exit(0);
 }
 
