@@ -44,23 +44,13 @@ Every sound is async — nothing blocks the AI. Loops never overlap. Variants ro
 
 ## Install
 
-### As a Claude Code plugin
-
-```bash
-/plugin marketplace add artmerenfeld/coding-asmr
-```
-
-Then install from the plugin menu. Requires `ffplay` (from FFmpeg) on your system.
-
-### Manual install
-
-#### 1. Install FFmpeg
+### 1. Install FFmpeg
 
 - Windows: `winget install FFmpeg`
 - macOS: `brew install ffmpeg`
 - Linux: `apt install ffmpeg`
 
-#### 2. Clone and install
+### 2. Clone and install
 
 ```bash
 git clone https://github.com/artmerenfeld/coding-asmr.git
@@ -70,7 +60,7 @@ npm run install-hooks
 
 The installer checks for `ffplay` and will tell you if it's missing.
 
-#### 3. Restart Claude Code
+### 3. Restart Claude Code
 
 Hooks load at session start, so **start a new session** to hear sounds.
 
