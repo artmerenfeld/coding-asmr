@@ -112,8 +112,8 @@ Loops start at a random offset so they don't sound identical each time.
 | Click | `click1.wav` — `click6.wav` | Every tool start and finish |
 | Check | `check1.wav` — `check3.wav` | Task marked done or Claude finishes |
 | Spacebar | `spacebar1.wav`, `spacebar2.wav` | Session starts |
-| Thinking | `thinking1.wav` — `thinking17.wav` | You submit a prompt (40% volume) |
-| Question | `question1.wav` — `question13.wav` | Claude asks you something (40% volume) |
+| Thinking | `thinking1.wav` — `thinking17.wav` | On prompt submit + 7% chance between tools (30% volume) |
+| Question | `question1.wav` — `question13.wav` | Claude asks you something, 70% chance (30% volume) |
 | Notification | `notification.wav` | Needs attention |
 | Compact | `compact.wav` | Context compaction |
 
@@ -129,7 +129,7 @@ One-shots play over ongoing loops — they don't interrupt them. They have a 0.5
 | `PreToolUse` (Read/Grep/Glob) | Start scanner | — |
 | `PreToolUse` (Write/Edit/Bash) | Start typing | — |
 | `PreToolUse` (AskUserQuestion) | — | question |
-| `PostToolUse` | — | click |
+| `PostToolUse` | — | click + thinking (7%) |
 | `PostToolUse` (Write/Edit/Bash) | Start typing | — |
 | `PostToolUse` (TodoWrite) | — | check |
 | `PostToolUseFailure` | Start typing | click |

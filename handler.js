@@ -17,9 +17,9 @@ const RANDOM_SOUNDS = {
   click: { prefix: 'click', count: 6 },
   check: { prefix: 'check', count: 3 },
   'session-start': { prefix: 'spacebar', count: 2 },
-  thinking: { prefix: 'thinking', count: 17, volumeScale: 0.4, chance: 1.0 },
-  'thinking-random': { prefix: 'thinking', count: 17, volumeScale: 0.4, chance: 0.07 },
-  question: { prefix: 'question', count: 13, volumeScale: 0.4, chance: 0.7 },
+  thinking: { prefix: 'thinking', count: 17, volumeScale: 0.3, chance: 1.0 },
+  'thinking-random': { prefix: 'thinking', count: 17, volumeScale: 0.3, chance: 0.07 },
+  question: { prefix: 'question', count: 13, volumeScale: 0.3, chance: 0.7 },
 };
 
 // Cooldown: prevent spammy rapid-fire sounds
